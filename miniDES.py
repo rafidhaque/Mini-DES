@@ -141,12 +141,14 @@ def f(right, subkey):
     value = xorr(right, subkey)
     cypher = s_boxing(value)
     cypher = permutation(cypher)
+    return cypher
 
-
-
-
-
-
+def round(plain, subkey):
+    left = plain[:12]
+    right = plain[12:]
+    temp = f(right, subkey)
+    temp = xorr(left, temp)
+    return right+temp
 
 
 
