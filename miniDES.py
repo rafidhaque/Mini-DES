@@ -52,15 +52,8 @@ def expansion(text):
 def pc1(lis):
     pc = [17, 9, 1, 18, 10, 2, 19, 11,3, 23, 15, 7, 22, 14, 6,21, 13, 5, 20, 12, 4]
     strr = ''
-    gapped = ''
-    count = 1
     for i in pc:
         strr += lis[i-1]
-        count += 1
-        if count % 4 == 0:
-            gapped += ' '
-        gapped += lis[i-1]
-    print(gapped)
     return strr
 
 def pc2(lis):
@@ -86,6 +79,7 @@ def keygen(lis, key):
         key_list.append(newkey)
         key1 = newkey1
         key2 = newkey2
+        #print(newkey, (newkey1), (newkey2))
     return key_list
 
 def xorr(str1, str2):
@@ -114,15 +108,16 @@ def find_s(s, row, col):
           [1,10,13,0,6,9,8,7,4,15,14,3,11,5,2,12]]
 
     lis = [s1, s2, s3]
-    
-    return lis[s-1][row-1][col-1]
+    #print(lis[1][2][3])
+    #print(s-1,row,col)
+    return lis[s-1][row][col]
 
 def find_row_col(strr, s):
     row_num = int(strr[:1] + strr[5:])
     col_num = int(strr[1:5])
     row_num = binary_to_decimal(row_num)
     col_num = binary_to_decimal(col_num)
-
+    #print(row_num, col_num)
     return find_s(s, row_num, col_num)
 
 def s_boxing(strr):
@@ -130,10 +125,14 @@ def s_boxing(strr):
     s2 = strr[6:12]
     s3 = strr[12:]
 
+    
+
     s1 = decimal_to_binary(find_row_col(s1, 1))
     s2 = decimal_to_binary(find_row_col(s2, 2))
     s3 = decimal_to_binary(find_row_col(s3, 3))
 
+    #print(s1, s2, s3)
+    
     return(s1+s2+s3)
 
 def inverse_ip(text):
@@ -164,25 +163,34 @@ def rounds(plain, subkey):
     temp = xorr(left, temp)
     return right+temp
 
-def des(plain, key):
+def encrypt_des(plain, key):
     plain = hex_to_bin(plain)
     key = hex_to_bin(key)
-
-    print(plain, key)
     
     plain = ip(plain)
+    key = pc1(key)
     key_list = keygen([1,1,2,2,2,2], key)
-
+    
     for subkey in key_list:
         plain = rounds(plain, subkey)
 
     cyphertext = inverse_ip(plain)
-    cyphertext = bin_to_hex(cyphertext)
-    return cyphertext
+    cypher = cyphertext[12:] + cyphertext[:12]
+    cypher = bin_to_hex(cypher)
+    return cypher
 
+def decrypt_des(cypher, key):
+    cypher = hex_to_bin(cypher)
+    key = hex_to_bin(key)
 
+    cypher = ip(cypher)
+    key_list = keygen([1,1,2,2,2,2], key)
 
+    for subkey in reversed(key_list):
+        cypher = rounds(cypher, subkey)
 
+    
+    
 
 
 
