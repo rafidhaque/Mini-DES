@@ -1,5 +1,39 @@
-key = '011010100101001111001110'
-plain = '100101010110110001011010'
+import math
+
+def hex_to_bin(number):
+    s = "{0:08b}".format(int(number, 16))
+    if len(s) == 21:
+        return '000' + s
+    if len(s) == 22:
+        return '00' + s
+    if len(s) == 23:
+        return '0' + s
+    return s
+
+def bin_to_hex(number):
+    s = hex(int(number, 2))
+    s = s[2:]
+    return s
+
+def binary_to_decimal(binary): 
+    binary1 = binary 
+    decimal, i, n = 0, 0, 0
+    while(binary != 0): 
+        dec = binary % 10
+        decimal = decimal + dec * pow(2, i) 
+        binary = binary//10
+        i += 1
+    return decimal
+
+def decimal_to_binary(n):  
+    s = bin(n).replace("0b", "")
+    if len(s) == 1:
+        return '000' + s
+    if len(s) == 2:
+        return '00' + s
+    if len(s) == 3:
+        return '0' + s
+    return s
 
 def ip(text):
     table = [18,10,2,20,12,4,22,14,6,24,16,8,17,9,1,19,11,3,21,13,5,23,15,7]
@@ -63,26 +97,6 @@ def xorr(str1, str2):
             strr += '1'
     return strr
 
-def binary_to_decimal(binary): 
-    binary1 = binary 
-    decimal, i, n = 0, 0, 0
-    while(binary != 0): 
-        dec = binary % 10
-        decimal = decimal + dec * pow(2, i) 
-        binary = binary//10
-        i += 1
-    return decimal
-
-def decimal_to_binary(n):  
-    s = bin(n).replace("0b", "")
-    if len(s) == 1:
-        return '000' + s
-    if len(s) == 2:
-        return '00' + s
-    if len(s) == 3:
-        return '0' + s
-    return s
-
 def find_s(s, row, col):
     s1 = [[14,4,13,1,2,15,11,8,3,10,6,12,5,9,0,7],
           [0,15,7,4,14,2,13,1,10,6,12,11,9,5,3,8],
@@ -143,12 +157,32 @@ def f(right, subkey):
     cypher = permutation(cypher)
     return cypher
 
-def round(plain, subkey):
+def rounds(plain, subkey):
     left = plain[:12]
     right = plain[12:]
     temp = f(right, subkey)
     temp = xorr(left, temp)
     return right+temp
+
+def des(plain, key):
+    plain = hex_to_bin(plain)
+    key = hex_to_bin(key)
+
+    print(plain, key)
+    
+    plain = ip(plain)
+    key_list = keygen([1,1,2,2,2,2], key)
+
+    for subkey in key_list:
+        plain = rounds(plain, subkey)
+
+    cyphertext = inverse_ip(plain)
+    cyphertext = bin_to_hex(cyphertext)
+    return cyphertext
+
+
+
+
 
 
 
