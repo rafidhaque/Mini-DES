@@ -182,13 +182,18 @@ def encrypt_des(plain, key):
 def decrypt_des(cypher, key):
     cypher = hex_to_bin(cypher)
     key = hex_to_bin(key)
-
+    
     cypher = ip(cypher)
+    key = pc1(key)
     key_list = keygen([1,1,2,2,2,2], key)
-
+    
     for subkey in reversed(key_list):
         cypher = rounds(cypher, subkey)
 
+    plain = cypher[12:] + cypher[:12]
+    plain = inverse_ip(plain)
+    plain = bin_to_hex(plain)
+    return plain
     
     
 
