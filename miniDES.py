@@ -174,8 +174,8 @@ def encrypt_des(plain, key):
     for subkey in key_list:
         plain = rounds(plain, subkey)
 
-    cyphertext = inverse_ip(plain)
-    cypher = cyphertext[12:] + cyphertext[:12]
+    cypher = plain[12:] + plain[:12]
+    cypher = inverse_ip(cypher)
     cypher = bin_to_hex(cypher)
     return cypher
 
